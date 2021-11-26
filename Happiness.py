@@ -5,7 +5,9 @@ class Happiness:
     def __init__(self, voting_matrix, election_vector):
         self.election_vector = election_vector
         self.happiness = 0
+        self.individual_happiness = np.ndarray(voting_matrix.shape[1])
         self.get_happiness(voting_matrix)
+
 
     # change to range -2 to 2
     def get_voter_happiness(self, voter_p):
@@ -18,5 +20,6 @@ class Happiness:
 
     def get_happiness(self, voting_matrix):
         self.happiness = 0
-        for voter in voting_matrix:
-            self.happiness += self.get_voter_happiness(voter)
+        for voter in range(voting_matrix.shape[1]):
+            self.individual_happiness[voter] = self.get_voter_happiness(voting_matrix[:,voter])
+        self.happiness = np.sum(self.individual_happiness)
