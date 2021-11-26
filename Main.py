@@ -5,7 +5,6 @@ import numpy as np
 def getOutcome(voters, candidates, scheme_type):
 
     scheme = compute_vot_scheme(scheme_type, candidates)
-
     preferencesMatrix = VotingSituation(voters, candidates).voting_matrix
 
     votes_per_candidate = [0 for i in range(candidates)]
