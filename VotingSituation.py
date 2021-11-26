@@ -14,15 +14,17 @@ class VotingSituation:
     def shufflevote(self):
         np.array([np.random.shuffle(x) for x in self.voting_matrix.T])
 
-    def calculatevote(self, voting_scheme):
-        scheme_vector = compute_vot_scheme(voting_scheme, self.voting_matrix.shape[1])
+    def calculate_vote_given_matrix(self, voting_scheme, voting_matrix):
+        scheme_vector = compute_vot_scheme(voting_scheme, voting_matrix.shape[0])
         voting_vector = np.zeros(self.candidate_am)
-        for i in range(self.candidate_am):
-            for vote in self.voting_matrix[i]:
+        for i in range(self.candidate_am):  # for each candidate / row in matrix
+            for vote in voting_matrix[i]:
                 voting_vector[vote] += scheme_vector[i]
 
         return voting_vector
 
+    def calculatevote(self, voting_scheme):
+        return self.calculate_vote_given_matrix(voting_scheme, self.voting_matrix)
 
 situation = VotingSituation(10,5)
 scheme = VotingScheme.VOTE_FOR_TWO
