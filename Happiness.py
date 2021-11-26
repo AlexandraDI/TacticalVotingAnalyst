@@ -8,7 +8,7 @@ class Happiness:
         self.happiness = 0
         self.get_happiness(voting_matrix)
 
-
+    # change to range -2 to 2
     def get_voter_happiness(self, voter_p):
         weight = len(voter_p)
         happiness = 0
