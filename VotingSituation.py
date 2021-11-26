@@ -1,6 +1,8 @@
 import numpy as np
+
 from Vot_Scheme import *
 from Happiness import Happiness
+
 class VotingSituation:
     def __init__(self, voter_am, candidate_am):
         voting_vector = np.arange(0, candidate_am)
