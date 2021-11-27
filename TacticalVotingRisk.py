@@ -35,13 +35,15 @@ class TacticalVotingRisk:
         """
         Compute the risk of tactical voting for 1 voting situation
 
+        If a VotingSituation is not given a new one is created.
+
         keys: dictionary to interpret the results
 
         Args:
             voters (int): number of voters.
             candidates (int): number of candidates.
             advance_voters_coalition (int): for the advance tactical voting, make coalitions of this size.
-            situation (Optional - Situation): given situation
+            situation (Optional - VotingSituation): given situation
             allow_bullet_voting (bool): whether
         """
         self._bullet = allow_bullet_voting
@@ -56,6 +58,8 @@ class TacticalVotingRisk:
 
         if advance_voters_coalition == 1:
             self.alternative_votings = math.factorial(self.options) - 1
+            if self._bullet:
+                self.alternative_votings += self.options
         else:
             pass  # TODO advance tv
 
@@ -113,6 +117,16 @@ class TacticalVotingRisk:
             real_preference = voting[:, v]  # real preference of the voter
             all_tv_preference = list(permutations(real_preference))[1:]
 
+            if self._bullet:
+                # for each option i create (i, -1, -1, ...)
+                bullets = [None for i in range(self.options)]
+                for i in range(self.options):
+                    p = [-1 for i in range(self.options)]
+                    p[0] = i
+                    bullets[i] = tuple(p)
+                all_tv_preference.extend(bullets)
+
+
             # inspect each possible voting
             for tv in all_tv_preference:
                 # change the voting matrix with the tactical vote
@@ -141,5 +155,5 @@ class TacticalVotingRisk:
 
 
 if __name__ == "__main__":
-    t = TacticalVotingRisk(15, 3)
+    t = TacticalVotingRisk(15, 3, allow_bullet_voting=True)
     res = t.compute_risk()

@@ -19,7 +19,8 @@ class VotingSituation:
         voting_vector = np.zeros(self.candidate_am)
         for i in range(self.candidate_am):  # for each candidate / row in matrix
             for vote in voting_matrix[i]:
-                voting_vector[vote] += scheme_vector[i]
+                if vote != -1:  # No vote
+                    voting_vector[vote] += scheme_vector[i]
 
         return voting_vector
 
