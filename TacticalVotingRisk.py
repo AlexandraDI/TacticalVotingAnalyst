@@ -25,18 +25,16 @@ class TacticalVotingRisk:
     }
 
     def __init__(
-        self,
-        voters: int,
-        candidates: int,
-        advance_voters_coalition: int = 1,
-        situation: Optional[VotingSituation] = None,
-        allow_bullet_voting=False,
+            self,
+            voters: int,
+            candidates: int,
+            advance_voters_coalition: int = 1,
+            situation: Optional[VotingSituation] = None,
+            allow_bullet_voting=False,
     ) -> None:
         """
         Compute the risk of tactical voting for 1 voting situation
-
         keys: dictionary to interpret the results
-
         Args:
             voters (int): number of voters.
             candidates (int): number of candidates.
@@ -62,10 +60,8 @@ class TacticalVotingRisk:
     def compute_risk(self):
         """
         Count how many tactival votes each voter has
-
         Returns:
             None.
-
         """
         results = {}  # key: scheme, values: (data, risks, avg_risk, avg_bool_risk)
         if self._coalition == 1:  # simple tv, 1 voter
@@ -81,14 +77,12 @@ class TacticalVotingRisk:
         return results
 
     def _compute_risk_no_coalitions(
-        self, scheme_type: VotingScheme
+            self, scheme_type: VotingScheme
     ) -> Tuple[List[List[Tuple]], List[int]]:
         """
         Compute the risk
-
         Args:
             scheme_type (VotingScheme): scheme used to compute the outcome.
-
         Returns:
             result (list), risks (list): list containing the tactical votings
             and the number of possible tactical votes for each voters.
@@ -97,7 +91,6 @@ class TacticalVotingRisk:
             Each tactical vote is a tuple containing the new preference, the
             new outcome, the new individual happines, the old individual happines,
             the new overall happiness, the old overall happines.
-
         """
         original_outcome = self.situation.calculatevote(scheme_type)
         original_happiness = Happiness(self.situation.voting_matrix, original_outcome)
@@ -124,8 +117,8 @@ class TacticalVotingRisk:
 
                 # Tactical voting
                 if (
-                    new_happiness.individual_happiness[v]
-                    > original_happiness.individual_happiness[v]
+                        new_happiness.individual_happiness[v]
+                        > original_happiness.individual_happiness[v]
                 ):
                     risks[v] += 1
                     result[v][risks[v]] = (
@@ -141,5 +134,37 @@ class TacticalVotingRisk:
 
 
 if __name__ == "__main__":
-    t = TacticalVotingRisk(15, 3)
-    res = t.compute_risk()
+
+    # Basic TVA
+    voters = 15
+    candidates = 3
+    t = TacticalVotingRisk(voters, candidates)
+    result = t.compute_risk()
+
+    for scheme in VotingScheme:
+        print("---------------------------------------------------------------------------------------------")
+        print(scheme.name)
+
+        print(f'Tactical voting for all voters {result[scheme.name][0]}')
+        print(f'How many tactical votes for all voters {result[scheme.name][1]}')
+        print(f'Avg risk is {result[scheme.name][2]}')
+        print(f'Avg bool risk is {result[scheme.name][3]}')
+
+        print("---------------------------------------------------------------------------------------------")
+
+        print("*********************************************************************************************")
+
+    for scheme in VotingScheme:
+        print("---------------------------------------------------------------------------------------------")
+        print(scheme.name)
+
+        for voter in range(voters):
+            if len(result[scheme.name][0][voter]) > 0:
+                print(f'voter {voter}')
+                print(f'First Tactical voting for voter {voter}: {result[scheme.name][0][voter][0][TacticalVotingRisk.keys["tactical_voting"]]}')
+                print(f'New happiness {result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_happiness"]]}')
+                print(f'Old happiness {result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_happiness"]]}')
+                print(f'New overall happiness {result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_overall_happiness"]]}')
+                print(f'Old overall happiness {result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_overall_happiness"]]}')
+
+                print("---------------------------------------------------------------------------------------------")
