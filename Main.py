@@ -1,3 +1,5 @@
+from math import factorial
+
 from TacticalVotingRisk import TacticalVotingRisk
 from VotingSituation import VotingSituation
 from Vot_Scheme import VotingScheme, compute_vot_scheme
@@ -28,32 +30,33 @@ def getOutcome(voters, candidates, scheme_type):
 if __name__ == "__main__":
 
     # Basic TVA
-    voters = 15
+    voters = 10
     candidates = 3
     t = TacticalVotingRisk(voters, candidates)
     result = t.compute_risk()
 
 
+    # for scheme in VotingScheme:
+    #     print(scheme.name)
+    #     print(f'How many tactical votes for all voters: {result[scheme.name][1]}')
+    #     for voter in range(voters):
+    #         print(f'How many tactical votes voter {voter} : {result[scheme.name][1][voter]}')
+    #     print("---------------------------------------------------------------------------------------------")
+
+
+    plot_voters = [str(item) for item in range(1, voters+1)]
+
+    fig, ax = plt.subplots(1, 4, figsize=(13, 4))
+
     for scheme in VotingScheme:
-        print(scheme.name)
-        for voter in range(voters):
-            print(f'How many tactical votes voter {voter} : {result[scheme.name][1][voter]}')
-
-        print("---------------------------------------------------------------------------------------------")
-
-    fig, ax = plt.subplots(1, 4,figsize=(14,4))
-
-    for scheme in VotingScheme:
-        print(f'scheme : {scheme.value}')
-
-        ax[scheme.value - 1].hist(result[scheme.name][1], alpha=0.5)
-        # ax.hist(result[scheme.name][1], facecolor='blue', alpha=0.5)
-
-        # adding labels
-        ax[scheme.value - 1].set_xlabel('voter')
-        ax[scheme.value - 1].set_ylabel('total tactical votes available')
-
+        # creating the bar plot
+        ax[scheme.value - 1].bar(plot_voters, result[scheme.name][1], color='maroon',
+            width=0.4)
+        # adding x label
+        ax[scheme.value - 1].set_xlabel("Voter")
         # Set title
         ax[scheme.value - 1].set_title(scheme.name.replace("_", " "))
 
+    # adding y label
+    ax[0].set_ylabel("Total tactical votes available")
     plt.show()
