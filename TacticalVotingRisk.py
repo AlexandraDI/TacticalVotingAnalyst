@@ -112,7 +112,7 @@ class TacticalVotingRisk:
         original_happiness = Happiness(self.situation.voting_matrix, original_outcome)
 
         result = [
-            [None for j in range(self.alternative_votings + 1)]
+            [None for j in range(self.alternative_votings)]
             for i in range(self.voters)
         ]
         risks = [0 for i in range(self.voters)]
@@ -140,7 +140,6 @@ class TacticalVotingRisk:
                         new_happiness.individual_happiness[v]
                         > original_happiness.individual_happiness[v]
                 ):
-                    risks[v] += 1
                     result[v][risks[v]] = (
                         tv,
                         tuple(new_outcome),
@@ -149,6 +148,7 @@ class TacticalVotingRisk:
                         new_happiness.happiness,
                         original_happiness.happiness,
                     )
+                    risks[v] += 1
         result = [[j for j in i if j is not None] for i in result]
         return result, risks
 
@@ -192,7 +192,6 @@ class TacticalVotingRisk:
                     (new_happiness.individual_happiness[list(c)]
                     > original_happiness.individual_happiness[list(c)]).all()
                 ):
-                    risks[n] += 1
                     # print(risks[n], len(result[n]))
                     result[n][risks[n]] = (
                         tv,
@@ -202,6 +201,7 @@ class TacticalVotingRisk:
                         new_happiness.happiness,
                         original_happiness.happiness,
                     )
+                    risks[n] += 1
         result = [[j for j in i if j is not None] for i in result]
         return result, risks
 
