@@ -1,4 +1,4 @@
-from itertools import permutations
+from itertools import permutations, product
 from typing import Optional, List, Tuple
 import math
 import numpy as np
@@ -48,20 +48,25 @@ class TacticalVotingRisk:
         """
         self._bullet = allow_bullet_voting
 
+        # Create new sitiation if not give
         if situation is not None:
             self.situation = situation
         else:
             self.situation = VotingSituation(voters, candidates)
 
+        # Get number of voter and candidates
         self.options, self.voters = self.situation.voting_matrix.shape
-        self._coalition = advance_voters_coalition
 
-        if advance_voters_coalition == 1:
-            self.alternative_votings = math.factorial(self.options) - 1
-            if self._bullet:
-                self.alternative_votings += self.options
-        else:
-            pass  # TODO advance tv
+        # Compute the number of alternative preferences
+        self.alternative_votings = math.factorial(self.options) - 1
+        if self._bullet:
+            self.alternative_votings += self.options
+
+        #TODO make sure it is the correct size
+        if advance_voters_coalition != 1:
+            self.alternative_votings **= advance_voters_coalition # Cartesian product
+
+        self._coalition = advance_voters_coalition
 
     def compute_risk(self):
         """
@@ -80,7 +85,13 @@ class TacticalVotingRisk:
                 avg_bool_risk = np.sum(tmp > 0) / self.voters
                 results[scheme.name] = (res, risk, avg_risk, avg_bool_risk)
         else:  # advance tv, coalition of voters
-            pass
+            for scheme in VotingScheme:
+                res, risk = self._compute_risk_coalitions(scheme)
+                tmp = np.array(risk)
+                avg_risk = np.sum(tmp) / (self.alternative_votings * math.perm(self.voters, self._coalition))
+                avg_bool_risk = np.sum(tmp > 0) / math.perm(self.voters, self._coalition)
+                results[scheme.name] = (res, risk, avg_risk, avg_bool_risk)
+
 
         return results
 
@@ -118,13 +129,7 @@ class TacticalVotingRisk:
             all_tv_preference = list(permutations(real_preference))[1:]
 
             if self._bullet:
-                # for each option i create (i, -1, -1, ...)
-                bullets = [None for i in range(self.options)]
-                for i in range(self.options):
-                    p = [-1 for i in range(self.options)]
-                    p[0] = i
-                    bullets[i] = tuple(p)
-                all_tv_preference.extend(bullets)
+                all_tv_preference.extend(self._get_bullet_votings())
 
 
             # inspect each possible voting
@@ -153,7 +158,73 @@ class TacticalVotingRisk:
         result = [[j for j in i if j is not None] for i in result]
         return result, risks
 
+    def _compute_risk_coalitions(
+        self, scheme_type: VotingScheme
+    ) -> Tuple[List[List[Tuple]], List[int]]:
+        original_outcome = self.situation.calculatevote(scheme_type)
+        original_happiness = Happiness(self.situation.voting_matrix, original_outcome)
+
+        coalitions = list(permutations(range(self.voters), self._coalition))
+
+        # TODO find correct size
+        result = [
+            [None for j in range(self.alternative_votings + 1)]
+            for i in coalitions
+        ]
+        risks = [0 for i in coalitions]
+
+        for n, c in enumerate(coalitions):
+            # compute permutations
+            voting = self.situation.voting_matrix.copy()
+            real_preference = voting[:, c]  # real preference of the coalition
+
+            individual_preferences = [None for i in c]
+            for i, v in enumerate(c):
+                individual_preferences[i] = list(permutations(real_preference[:, i]))
+                if self._bullet:
+                    individual_preferences[i].extend(self._get_bullet_votings())
+            all_tv_preference = product(*individual_preferences)
+
+            # inspect each possible voting
+            for tv in all_tv_preference:
+                voting[:, c] = np.array(tv).T  # preference is should be a column vector
+                new_outcome = self.situation.calculate_vote_given_matrix(
+                    scheme_type, voting
+                )
+                new_happiness = Happiness(voting, new_outcome)
+
+                # Tactical voting if happiness improvess for everybody
+                if (
+                    (new_happiness.individual_happiness[list(c)]
+                    > original_happiness.individual_happiness[list(c)]).all()
+                ):
+                    risks[n] += 1
+                    # print(risks[n], len(result[n]))
+                    result[n][risks[n]] = (
+                        tv,
+                        tuple(new_outcome),
+                        new_happiness.individual_happiness[list(c)],
+                        original_happiness.individual_happiness[list(c)],
+                        new_happiness.happiness,
+                        original_happiness.happiness,
+                    )
+        result = [[j for j in i if j is not None] for i in result]
+        return result, risks
+
+    def _get_bullet_votings(self):
+        # for each option i create (i, -1, -1, ...)
+        bullets = [None for i in range(self.options)]
+        for i in range(self.options):
+            p = [-1 for i in range(self.options)]
+            p[0] = i
+            bullets[i] = tuple(p)
+        return bullets
 
 if __name__ == "__main__":
-    t = TacticalVotingRisk(15, 3, allow_bullet_voting=True)
+    t = TacticalVotingRisk(
+        voters = 4,
+        candidates = 3,
+        advance_voters_coalition = 2,
+        allow_bullet_voting=False,
+    )
     res = t.compute_risk()
