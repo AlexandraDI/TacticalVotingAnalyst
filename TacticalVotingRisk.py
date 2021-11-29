@@ -65,6 +65,7 @@ class TacticalVotingRisk:
         if advance_voters_coalition != 1:
             self.alternative_votings **= advance_voters_coalition # Cartesian product
 
+
         self._coalition = advance_voters_coalition
 
     def compute_risk(self):
@@ -162,7 +163,7 @@ class TacticalVotingRisk:
 
         # TODO find correct size
         result = [
-            [None for j in range(self.alternative_votings + 1)]
+            [None for j in range(self.alternative_votings)]
             for i in coalitions
         ]
         risks = [0 for i in coalitions]
@@ -174,10 +175,10 @@ class TacticalVotingRisk:
 
             individual_preferences = [None for i in c]
             for i, v in enumerate(c):
-                individual_preferences[i] = list(permutations(real_preference[:, i]))
+                individual_preferences[i] = list(permutations(real_preference[:, i]))[1:]
                 if self._bullet:
                     individual_preferences[i].extend(self._get_bullet_votings())
-            all_tv_preference = product(*individual_preferences)
+            all_tv_preference = list(product(*individual_preferences))
 
             # inspect each possible voting
             for tv in all_tv_preference:
