@@ -8,20 +8,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def getOutcome(voters, candidates, scheme_type):
-    scheme = compute_vot_scheme(scheme_type, candidates)
-    preferencesMatrix = VotingSituation(voters, candidates).voting_matrix
+# def getOutcome(voters, candidates, scheme_type):
+#     scheme = compute_vot_scheme(scheme_type, candidates)
+#     preferencesMatrix = VotingSituation(voters, candidates).voting_matrix
 
-    votes_per_candidate = [0 for i in range(candidates)]
+#     votes_per_candidate = [0 for i in range(candidates)]
 
-    for voter in range(voters):
-        for pref in range(candidates):
-            i = preferencesMatrix[pref, voter]
-            print(i)
-            votes_per_candidate[i - 1] += scheme[pref]
+#     for voter in range(voters):
+#         for pref in range(candidates):
+#             i = preferencesMatrix[pref, voter]
+#             print(i)
+#             votes_per_candidate[i - 1] += scheme[pref]
 
-    print(preferencesMatrix[0])
-    return votes_per_candidate
+#     print(preferencesMatrix[0])
+#     return votes_per_candidate
 
 
 # make function to take preferences and voting-scheme, outputs non strategic outcome
@@ -123,13 +123,14 @@ def plot_overall_hapiness_per_scheme(voters, result, scheme):
 
     plt.show()
 
-
 if __name__ == "__main__":
     # Basic TVA
     voters = 10
     candidates = 4
     t = TacticalVotingRisk(voters, candidates)
     result = t.compute_risk()
+
+    print("Original voting Matrix = \n", t.situation.voting_matrix)
 
     plot_total_tactical_votes_available_per_voter(voters, result)
 

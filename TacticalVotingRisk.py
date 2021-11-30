@@ -68,6 +68,7 @@ class TacticalVotingRisk:
 
         self._coalition = advance_voters_coalition
 
+
     def compute_risk(self):
         """
         Count how many tactival votes each voter has
@@ -90,7 +91,6 @@ class TacticalVotingRisk:
                 avg_bool_risk = np.sum(tmp > 0) / math.perm(self.voters, self._coalition)
                 results[scheme.name] = (res, risk, avg_risk, avg_bool_risk)
 
-
         return results
 
     def _compute_risk_no_coalitions(
@@ -111,6 +111,11 @@ class TacticalVotingRisk:
         """
         original_outcome = self.situation.calculatevote(scheme_type)
         original_happiness = Happiness(self.situation.voting_matrix, original_outcome)
+        print("Scheme = ", scheme_type)
+        print("Original outcome = ", original_outcome)
+        for value in original_happiness.individual_happiness:
+            print("Original happiness = ", value)
+        #print("Original happiness = ", original_happiness)
 
         result = [
             [None for j in range(self.alternative_votings)]
@@ -125,7 +130,6 @@ class TacticalVotingRisk:
 
             if self._bullet:
                 all_tv_preference.extend(self._get_bullet_votings())
-
 
             # inspect each possible voting
             for tv in all_tv_preference:

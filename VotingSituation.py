@@ -27,9 +27,9 @@ class VotingSituation:
     def calculatevote(self, voting_scheme):
         return self.calculate_vote_given_matrix(voting_scheme, self.voting_matrix)
 
-situation = VotingSituation(10,5)
-scheme = VotingScheme.VOTE_FOR_TWO
-voting_results = situation.calculatevote(scheme)
+# situation = VotingSituation(10,5)
+# scheme = VotingScheme.VOTE_FOR_TWO
+# voting_results = situation.calculatevote(scheme)
 
-hapiness = Happiness(situation.voting_matrix, voting_results)
-print(hapiness.happiness)
+# hapiness = Happiness(situation.voting_matrix, voting_results)
+# print(hapiness.happiness)
