@@ -80,6 +80,7 @@ def bar_plot_happiness_per_scheme(voters, result, scheme):
     ax[0].set_ylabel("OLD HAPPINESS")
     ax[0].bar(plot_voters, plot_old_happiness, color='maroon',
                                  width=0.4)
+    ax[0].axhline(0, color='k')
     # creating the bar plot
     ax[1].bar(plot_voters, plot_new_happiness, color='maroon',
                                  width=0.4)
@@ -91,6 +92,7 @@ def bar_plot_happiness_per_scheme(voters, result, scheme):
     ax[1].bar(plot_voters, plot_new_happiness, color='maroon',
                                  width=0.4)
     
+    ax[1].axhline(0, color='k')
     plt.show()
 
 # def plot_hapiness_per_scheme(voters, result, scheme):
