@@ -171,7 +171,6 @@ if __name__ == "__main__":
     candidates = 4
     t = TacticalVotingRisk(voters, candidates)
     result = t.compute_risk()
-    print(result["VOTE_FOR_ONE"][0])
 
     print("--------\nOriginal voting Matrix = \n", t.situation.voting_matrix)
     for scheme in VotingScheme:
