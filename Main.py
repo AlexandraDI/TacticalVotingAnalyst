@@ -171,8 +171,19 @@ if __name__ == "__main__":
     candidates = 4
     t = TacticalVotingRisk(voters, candidates)
     result = t.compute_risk()
+    print(result["VOTE_FOR_ONE"][0])
 
-    print("Original voting Matrix = \n", t.situation.voting_matrix)
+    print("--------\nOriginal voting Matrix = \n", t.situation.voting_matrix)
+    for scheme in VotingScheme:
+        print("-------------")
+        print("RISK FOR SCHEME: ", scheme.name)
+        risks = result[scheme.name][1]
+        total_risk = 0
+        for r in risks:
+            total_risk += r
+        print("Individual risk list: ", risks)     
+        print("Total risk: ", total_risk)
+        print("Average risk: ", result[scheme.name][2])
 
     plot_total_tactical_votes_available_per_voter(voters, result)
 

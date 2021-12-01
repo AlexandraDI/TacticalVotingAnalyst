@@ -112,10 +112,10 @@ class TacticalVotingRisk:
         original_outcome = self.situation.calculatevote(scheme_type)
         original_happiness = Happiness(self.situation.voting_matrix, original_outcome)
         
+        print("--------------")
         print("Scheme = ", scheme_type)
         print("Original outcome = ", original_outcome)
-        for value in original_happiness.individual_happiness:
-            print("Original happiness = ", value)
+        print("Original happiness = ", original_happiness.happiness)
 
         result = [
             [None for j in range(self.alternative_votings)]
