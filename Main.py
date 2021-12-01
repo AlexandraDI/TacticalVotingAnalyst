@@ -53,75 +53,115 @@ def plot_total_tactical_votes_available_per_voter(voters, result):
     plt.show()
 
 
-def plot_hapiness_per_scheme(voters, result, scheme):
+def bar_plot_happiness_per_scheme(voters, result, scheme):
+    plot_voters = [str(item) for item in range(1, voters + 1)]
+    plot_old_happiness = []
+    plot_new_happiness = []
+    for i in range(len(result[scheme.name][0])):
+        try:
+            plot_old_happiness.append(result[scheme.name][0][i][0][TacticalVotingRisk.keys["old_happiness"]])
+        except:
+            plot_old_happiness.append(0)
+            print("Failed to get old happiness for voter ", i+1)
+        try:
+            plot_new_happiness.append(result[scheme.name][0][i][0][TacticalVotingRisk.keys["new_happiness"]])
+        except:
+            plot_new_happiness.append(0)
+            print("Failed to get new happiness for voter ", i+1)
+    
     fig, ax = plt.subplots(1, 2, figsize=(13, 4))
-
-    plt.style.use('seaborn-deep')
-    bins = np.linspace(-2, 4, 30)
-
-    for voter in range(voters):
-        if len(result[scheme.name][0][voter]) > 0:
-            ax[0].hist(
-                result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_happiness"]], bins,
-                label=['voter ' + str(voter)])
-
+    # creating the bar plot
+    ax[0].bar(plot_voters, plot_old_happiness, color='maroon',
+                                 width=0.4)
     # adding x label
-    ax[0].set_xlabel("Happiness Value")
+    ax[0].set_xlabel("Voter")
     # Set title
-    ax[0].set_title("OLD HAPPINESS : "+scheme.name.replace("_", " "))
-    ax[0].legend(loc='upper right')
-
-    for voter in range(voters):
-        if len(result[scheme.name][0][voter]) > 0:
-            ax[1].hist(
-                result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_happiness"]], bins,
-                label=['voter ' + str(voter)])
-
+    ax[0].set_title(scheme.name.replace("_", " "))
+    ax[0].set_ylabel("OLD HAPPINESS")
+    ax[0].bar(plot_voters, plot_old_happiness, color='maroon',
+                                 width=0.4)
+    # creating the bar plot
+    ax[1].bar(plot_voters, plot_new_happiness, color='maroon',
+                                 width=0.4)
     # adding x label
-    ax[1].set_xlabel("Happiness Value")
+    ax[1].set_xlabel("Voter")
     # Set title
-    ax[1].set_title("NEW HAPPINESS : "+scheme.name.replace("_", " "))
-    ax[1].legend(loc='upper right')
-
-    # adding y label
-    ax[0].set_ylabel("Voter in the hapiness level")
-
+    ax[1].set_title(scheme.name.replace("_", " "))
+    ax[1].set_ylabel("NEW HAPPINESS")
+    ax[1].bar(plot_voters, plot_new_happiness, color='maroon',
+                                 width=0.4)
+    
     plt.show()
 
-def plot_overall_hapiness_per_scheme(voters, result, scheme):
-    fig, ax = plt.subplots(1, 2, figsize=(13, 4))
+# def plot_hapiness_per_scheme(voters, result, scheme):
+#     fig, ax = plt.subplots(1, 2, figsize=(13, 4))
 
-    plt.style.use('seaborn-deep')
-    bins = np.linspace(0, 20, 30)
+#     plt.style.use('seaborn-deep')
+#     bins = np.linspace(-2, 4, 30)
 
-    for voter in range(voters):
-        if len(result[scheme.name][0][voter]) > 0:
-            ax[0].hist(
-                result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_overall_happiness"]], bins,
-                label=['voter ' + str(voter)])
+#     for voter in range(voters):
+#         if len(result[scheme.name][0][voter]) > 0:
+#             ax[0].hist(
+#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_happiness"]], bins,
+#                 label=['voter ' + str(voter)])
 
-    # adding x label
-    ax[0].set_xlabel("Happiness Value")
-    # Set title
-    ax[0].set_title("OLD OVERALL HAPPINESS : "+scheme.name.replace("_", " "))
-    ax[0].legend(loc='upper right')
+#     # adding x label
+#     ax[0].set_xlabel("Happiness Value")
+#     # Set title
+#     ax[0].set_title("OLD HAPPINESS : "+scheme.name.replace("_", " "))
+#     ax[0].legend(loc='upper right')
 
-    for voter in range(voters):
-        if len(result[scheme.name][0][voter]) > 0:
-            ax[1].hist(
-                result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_overall_happiness"]], bins,
-                label=['voter ' + str(voter)])
+#     for voter in range(voters):
+#         if len(result[scheme.name][0][voter]) > 0:
+#             ax[1].hist(
+#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_happiness"]], bins,
+#                 label=['voter ' + str(voter)])
 
-    # adding x label
-    ax[1].set_xlabel("Happiness Value")
-    # Set title
-    ax[1].set_title("NEW OVERALL HAPPINESS : "+scheme.name.replace("_", " "))
-    ax[1].legend(loc='upper right')
+#     # adding x label
+#     ax[1].set_xlabel("Happiness Value")
+#     # Set title
+#     ax[1].set_title("NEW HAPPINESS : "+scheme.name.replace("_", " "))
+#     ax[1].legend(loc='upper right')
 
-    # adding y label
-    ax[0].set_ylabel("Voter in the hapiness level")
+#     # adding y label
+#     ax[0].set_ylabel("Voter in the hapiness level")
 
-    plt.show()
+#     plt.show()
+
+# def plot_overall_hapiness_per_scheme(voters, result, scheme):
+#     fig, ax = plt.subplots(1, 2, figsize=(13, 4))
+
+#     plt.style.use('seaborn-deep')
+#     bins = np.linspace(0, 20, 30)
+
+#     for voter in range(voters):
+#         if len(result[scheme.name][0][voter]) > 0:
+#             ax[0].hist(
+#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_overall_happiness"]], bins,
+#                 label=['voter ' + str(voter)])
+
+#     # adding x label
+#     ax[0].set_xlabel("Happiness Value")
+#     # Set title
+#     ax[0].set_title("OLD OVERALL HAPPINESS : "+scheme.name.replace("_", " "))
+#     ax[0].legend(loc='upper right')
+
+#     for voter in range(voters):
+#         if len(result[scheme.name][0][voter]) > 0:
+#             ax[1].hist(
+#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_overall_happiness"]], bins,
+#                 label=['voter ' + str(voter)])
+
+#     # adding x label
+#     ax[1].set_xlabel("Happiness Value")
+#     # Set title
+#     ax[1].set_title("NEW OVERALL HAPPINESS : "+scheme.name.replace("_", " "))
+#     ax[1].legend(loc='upper right')
+
+#     # adding y label
+#     ax[0].set_ylabel("Voter in the hapiness level")
+
+#     plt.show()
 
 if __name__ == "__main__":
     # Basic TVA
@@ -135,7 +175,7 @@ if __name__ == "__main__":
     plot_total_tactical_votes_available_per_voter(voters, result)
 
     for scheme in VotingScheme:
-        plot_hapiness_per_scheme(voters, result, scheme)
+        bar_plot_happiness_per_scheme(voters, result, scheme)
 
     # for scheme in VotingScheme:
     #     plot_overall_hapiness_per_scheme(voters, result, scheme)
