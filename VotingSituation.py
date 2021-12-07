@@ -30,6 +30,10 @@ class VotingSituation:
 # situation = VotingSituation(10,5)
 # scheme = VotingScheme.VOTE_FOR_TWO
 # voting_results = situation.calculatevote(scheme)
-
+#
 # hapiness = Happiness(situation.voting_matrix, voting_results)
+# print(hapiness.happiness)
+# hapiness.get_happiness(situation.voting_matrix, hapiness.get_voter_happiness_dictatorship)
+# print(hapiness.happiness)
+# hapiness.get_happiness(situation.voting_matrix, hapiness.get_voter_happiness_vector_distance)
 # print(hapiness.happiness)
