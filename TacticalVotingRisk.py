@@ -26,8 +26,8 @@ class TacticalVotingRisk:
 
     def __init__(
         self,
-        voters: int,
-        candidates: int,
+        voters: int = 0,
+        candidates: int = 0,
         advance_voters_coalition: int = 1,
         situation: Optional[VotingSituation] = None,
         allow_bullet_voting=False,
