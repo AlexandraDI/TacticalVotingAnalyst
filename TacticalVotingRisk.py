@@ -1,4 +1,4 @@
-from itertools import permutations, product
+from itertools import permutations, product, combinations
 from typing import Optional, List, Tuple
 import math
 import numpy as np
@@ -61,7 +61,6 @@ class TacticalVotingRisk:
         if self._bullet:
             self.alternative_votings += self.options
 
-        # TODO make sure it is the correct size
         if advance_voters_coalition != 1:
             self.alternative_votings **= advance_voters_coalition  # Cartesian product
 
@@ -87,7 +86,7 @@ class TacticalVotingRisk:
                 res, risk = self._compute_risk_coalitions(scheme)
                 tmp = np.array(risk)
                 avg_risk = np.sum(tmp) / (
-                    self.alternative_votings * math.perm(self.voters, self._coalition)
+                    self.alternative_votings * math.comb(self.voters, self._coalition)
                 )
                 avg_bool_risk = np.sum(tmp > 0) / math.perm(
                     self.voters, self._coalition
@@ -165,7 +164,7 @@ class TacticalVotingRisk:
         original_outcome = self.situation.calculatevote(scheme_type)
         original_happiness = Happiness(self.situation.voting_matrix, original_outcome)
 
-        coalitions = list(permutations(range(self.voters), self._coalition))
+        coalitions = list(combinations(range(self.voters), self._coalition))
 
         # TODO find correct size
         result = [[None for j in range(self.alternative_votings)] for i in coalitions]

@@ -3,7 +3,7 @@ import pickle
 from typing import Optional, Tuple, List, Dict, Any
 from matplotlib import pyplot as plt
 import math
-from itertools import permutations
+from itertools import permutations, combinations
 
 
 from Main import (
@@ -107,6 +107,7 @@ def exp_bullet_voting(voters: Optional[int] = 10, options: Optional[int] = 4):
         "allow_bullet_voting": True,
     }
 
+    print("-- With bullet voting --")
     tva, result = run_exp(**kargs)
     job(tva, result, "Change of happiness with bullet voting")
 
@@ -115,6 +116,7 @@ def exp_bullet_voting(voters: Optional[int] = 10, options: Optional[int] = 4):
         "allow_bullet_voting": False,
     }
 
+    print("\n\n-- Without bullet voting --")
     tva, result = run_exp(**kargs)
     job(tva, result, "Change of happiness without bullet voting")
 
@@ -130,13 +132,13 @@ def exp_coation(
     tva, result = run_exp(**kargs)
 
     hist_plot_total_tactical_votes_available_per_voter(
-        math.perm(voters, coalition), result
+        math.comb(voters, coalition), result
     )
     bar_plot_total_tactical_votes_available_per_voter(
-        math.perm(voters, coalition), result
+        math.comb(voters, coalition), result
     )
 
-    coalitions = list(permutations(range(voters), coalition))
+    coalitions = list(combinations(range(voters), coalition))
 
     for scheme in VotingScheme:
         # get avg happiness
@@ -179,5 +181,8 @@ def exp_coation(
 
 if __name__ == "__main__":
     np.random.seed(42)
+    print("###### BULLET VOTING ########")
     exp_bullet_voting()
+
+    print("###### COALITIONS ########")
     exp_coation()
