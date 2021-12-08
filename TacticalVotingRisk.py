@@ -88,7 +88,7 @@ class TacticalVotingRisk:
                 avg_risk = np.sum(tmp) / (
                     self.alternative_votings * math.comb(self.voters, self._coalition)
                 )
-                avg_bool_risk = np.sum(tmp > 0) / math.perm(
+                avg_bool_risk = np.sum(tmp > 0) / math.comb(
                     self.voters, self._coalition
                 )
                 results[scheme.name] = (res, risk, avg_risk, avg_bool_risk)
