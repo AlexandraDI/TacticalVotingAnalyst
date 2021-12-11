@@ -1,14 +1,13 @@
-import numpy as np
-import pickle
+"""
+This module perfoms the experiments for the Advanced TVA
+"""
 from typing import Optional, Tuple, List, Dict, Any
-from matplotlib import pyplot as plt
 import math
-from itertools import permutations, combinations
-
+from itertools import combinations
+import numpy as np
+from matplotlib import pyplot as plt
 
 from Main import (
-    bar_plot_happiness_per_scheme,
-    bar_plot_happiness_per_scheme_many_voters,
     hist_plot_total_tactical_votes_available_per_voter,
     bar_plot_total_tactical_votes_available_per_voter,
 )
@@ -48,6 +47,22 @@ def run_exp(**kargs: Dict[str, Any]) -> Tuple[TacticalVotingRisk, List]:
 
 
 def exp_bullet_voting(voters: Optional[int] = 10, options: Optional[int] = 4):
+    """
+    Experiment for bullet voting.
+
+    Compare the risk of tactical voting when voters can di bullet voting
+    and when they cannot.
+
+    Args:
+        voters (Optional[int], optional): Number of voters. Defaults to 10.
+        options (Optional[int], optional): Number of candidates. Defaults to 4.
+
+    Returns:
+        None.
+
+    Notes:
+        This function plots multiple graphs
+    """
     kargs = {
         "voters": voters,
         "candidates": options,
@@ -56,8 +71,7 @@ def exp_bullet_voting(voters: Optional[int] = 10, options: Optional[int] = 4):
 
     tva, result = run_exp(**kargs)
 
-    # plot number of tv
-    def job(tva, restul, title):
+    def job(tva, result, title):
         hist_plot_total_tactical_votes_available_per_voter(voters, result)
         bar_plot_total_tactical_votes_available_per_voter(voters, result)
 
@@ -124,6 +138,21 @@ def exp_bullet_voting(voters: Optional[int] = 10, options: Optional[int] = 4):
 def exp_coation(
     voters: Optional[int] = 5, options: Optional[int] = 3, coalition: Optional[int] = 2,
 ):
+    """
+    Experiment for voters collusion.
+
+
+    Args:
+        voters (Optional[int], optional): Number of voters. Defaults to 10.
+        options (Optional[int], optional): Number of candidates. Defaults to 4.
+        coalition (Optional[int], optional): Size of the coalitions. Defaults to 2
+
+        Returns:
+        None.
+
+    Notes:
+        This function plots multiple graphs
+    """
     kargs = {
         "voters": voters,
         "candidates": options,
@@ -148,10 +177,10 @@ def exp_coation(
         original_happiness = happiness.individual_happiness
         happiness_data = [[] for i in range(voters)]
 
-        for coalition, coalition_res in enumerate(result[scheme.name][0]):
+        for c, coalition_res in enumerate(result[scheme.name][0]):
             for tv in coalition_res:
                 if tv is not None and len(tv) != 0:
-                    for v in coalitions[coalition]:  # each voter in the coalition
+                    for v in coalitions[c]:  # each voter in the coalition
                         happiness_data[v].append(tv[2])
         new_happiness = [np.average(i) for i in happiness_data]
         new_happiness_std = [np.std(i) for i in happiness_data]

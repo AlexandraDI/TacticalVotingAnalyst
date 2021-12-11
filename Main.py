@@ -1,48 +1,39 @@
-from math import factorial
-
-from TacticalVotingRisk import TacticalVotingRisk
-from VotingSituation import VotingSituation
-from Vot_Scheme import VotingScheme, compute_vot_scheme
-import numpy as np
-# import matplotlib.mlab as mlab
+"""
+This module perform the experiments for the Basic TVA.
+It also define functions to plot the results.
+"""
+from typing import Tuple
 import matplotlib.pyplot as plt
-
-
-# def getOutcome(voters, candidates, scheme_type):
-#     scheme = compute_vot_scheme(scheme_type, candidates)
-#     preferencesMatrix = VotingSituation(voters, candidates).voting_matrix
-
-#     votes_per_candidate = [0 for i in range(candidates)]
-
-#     for voter in range(voters):
-#         for pref in range(candidates):
-#             i = preferencesMatrix[pref, voter]
-#             print(i)
-#             votes_per_candidate[i - 1] += scheme[pref]
-
-#     print(preferencesMatrix[0])
-#     return votes_per_candidate
+from TacticalVotingRisk import TacticalVotingRisk
+from Vot_Scheme import VotingScheme
 
 
 # make function to take preferences and voting-scheme, outputs non strategic outcome
 # calculate happiness based on non-strategic outcome
+def bar_plot_total_tactical_votes_available_per_voter(
+    voters: int, result: Tuple
+) -> None:
+    """
+    Generate bar plot with the number of tactical votes for each voters
+    for each scheme.
 
-def bar_plot_total_tactical_votes_available_per_voter(voters, result):
-    # for scheme in VotingScheme:
-    #     print(scheme.name)
-    #     print(f'How many tactical votes for all voters: {result[scheme.name][1]}')
-    #     for voter in range(voters):
-    #         print(f'How many tactical votes voter {voter} : {result[scheme.name][1][voter]}')
-    #     print("---------------------------------------------------------------------------------------------")
+    Args:
+        voters: number of voters
+        result: result structure from TacticalVotingRisk
 
+    Returns:
+        None.
+
+    """
     plot_voters = [str(item) for item in range(1, voters + 1)]
 
-    fig, ax = plt.subplots(1, 4, figsize=(13, 4))
+    _, ax = plt.subplots(1, 4, figsize=(13, 4))
 
     for scheme in VotingScheme:
         # creating the bar plot
-        ax[scheme.value - 1].bar(plot_voters, result[scheme.name][1], color='maroon',
-                                 width=0.4)
+        ax[scheme.value - 1].bar(
+            plot_voters, result[scheme.name][1], color="maroon", width=0.4
+        )
         # adding x label
         ax[scheme.value - 1].set_xlabel("Voter")
         # Set title
@@ -53,23 +44,26 @@ def bar_plot_total_tactical_votes_available_per_voter(voters, result):
     plt.show()
 
 
-def hist_plot_total_tactical_votes_available_per_voter(voters, result):
-    # for scheme in VotingScheme:
-    #     print(scheme.name)
-    #     print(f'How many tactical votes for all voters: {result[scheme.name][1]}')
-    #     for voter in range(voters):
-    #         print(f'How many tactical votes voter {voter} : {result[scheme.name][1][voter]}')
-    #     print("---------------------------------------------------------------------------------------------")
+def hist_plot_total_tactical_votes_available_per_voter(
+    voters: int, result: Tuple
+) -> None:
+    """
+    Generate histogram with the number of tactical votes for each scheme.
 
-    plot_voters = [str(item) for item in range(1, voters + 1)]
+    Args:
+        voters: number of voters
+        result: result structure from TacticalVotingRisk
 
-    fig, ax = plt.subplots(1, 4, figsize=(13, 4))
+    Returns:
+        None.
+
+    """
+    _, ax = plt.subplots(1, 4, figsize=(13, 4))
     # bins = np.linspace(-2, 10, 30)
 
     for scheme in VotingScheme:
         # creating the bar plot
-        ax[scheme.value - 1].hist(result[scheme.name][1], color='maroon',
-                                 width=0.4)
+        ax[scheme.value - 1].hist(result[scheme.name][1], color="maroon", width=0.4)
         # adding x label
         ax[scheme.value - 1].set_xlabel("Tactical votes available")
         # Set title
@@ -80,158 +74,139 @@ def hist_plot_total_tactical_votes_available_per_voter(voters, result):
     plt.show()
 
 
+def bar_plot_happiness_per_scheme(
+    voters: int, result: Tuple, scheme: VotingScheme
+) -> None:
+    """
+    Generate bar plot with the happiness for each voters.
+    The plot display both the original happiness and the happiness that a voter
+    can achieve with tactical voting.
+    The tactical voting are independent and the happiness is computed by
+    performing one tactical voting at the time.
 
-def bar_plot_happiness_per_scheme(voters, result, scheme):
+    Args:
+        voters: number of voters
+        result: result structure from TacticalVotingRisk
+        scheme: voting scheme to display
+
+    Returns:
+        None.
+
+    """
     plot_voters = [str(item) for item in range(1, voters + 1)]
     plot_old_happiness = []
     plot_new_happiness = []
     for i in range(len(result[scheme.name][0])):
         try:
-            plot_old_happiness.append(result[scheme.name][0][i][0][TacticalVotingRisk.keys["old_happiness"]])
-        except:
+            plot_old_happiness.append(
+                result[scheme.name][0][i][0][TacticalVotingRisk.keys["old_happiness"]]
+            )
+        except (IndexError, KeyError):
             plot_old_happiness.append(0)
-            print("Failed to get old happiness for voter ", i+1)
+            print("Failed to get old happiness for voter ", i + 1)
         try:
-            plot_new_happiness.append(result[scheme.name][0][i][0][TacticalVotingRisk.keys["new_happiness"]])
-        except:
+            plot_new_happiness.append(
+                result[scheme.name][0][i][0][TacticalVotingRisk.keys["new_happiness"]]
+            )
+        except (IndexError, KeyError):
             plot_new_happiness.append(0)
-            print("Failed to get new happiness for voter ", i+1)
-    
-    fig, ax = plt.subplots(1, 2, figsize=(13, 4))
+            print("Failed to get new happiness for voter ", i + 1)
+
+    _, ax = plt.subplots(1, 2, figsize=(13, 4))
     # creating the bar plot
-    ax[0].bar(plot_voters, plot_old_happiness, color='maroon',
-                                 width=0.4)
+    ax[0].bar(plot_voters, plot_old_happiness, color="maroon", width=0.4)
     # adding x label
     ax[0].set_xlabel("Voter")
     # Set title
     ax[0].set_title(scheme.name.replace("_", " "))
     ax[0].set_ylabel("OLD HAPPINESS")
-    ax[0].bar(plot_voters, plot_old_happiness, color='maroon',
-                                 width=0.4)
-    ax[0].axhline(0, color='k')
+    ax[0].bar(plot_voters, plot_old_happiness, color="maroon", width=0.4)
+    ax[0].axhline(0, color="k")
     # creating the bar plot
-    ax[1].bar(plot_voters, plot_new_happiness, color='maroon',
-                                 width=0.4)
+    ax[1].bar(plot_voters, plot_new_happiness, color="maroon", width=0.4)
     # adding x label
     ax[1].set_xlabel("Voter")
     # Set title
     ax[1].set_title(scheme.name.replace("_", " "))
     ax[1].set_ylabel("NEW HAPPINESS")
-    ax[1].bar(plot_voters, plot_new_happiness, color='maroon',
-                                 width=0.4)
-    
-    ax[1].axhline(0, color='k')
+    ax[1].bar(plot_voters, plot_new_happiness, color="maroon", width=0.4)
+
+    ax[1].axhline(0, color="k")
     plt.show()
 
 
-def bar_plot_happiness_per_scheme_many_voters(voters, result, scheme):
+def bar_plot_happiness_per_scheme_many_voters(
+    voters: int, result: Tuple, scheme: VotingScheme
+) -> None:
+    """
+    Generate bar plot with the happiness for each voters.
+    The plot display both the original happiness and the happiness that a voter
+    can achieve with tactical voting.
+    The tactical voting are independent and the happiness is computed by
+    performing one tactical voting at the time.
+
+    Args:
+        voters: number of voters
+        result: result structure from TacticalVotingRisk
+        scheme: voting scheme to display
+
+    Returns:
+        None.
+
+    """
     plot_voters = [str(item) for item in range(1, voters + 1)]
     plot_old_happiness = []
     plot_new_happiness = []
     for i in range(len(result[scheme.name][0])):
         try:
-            plot_old_happiness.append(result[scheme.name][0][i][0][TacticalVotingRisk.keys["old_happiness"]])
-        except:
+            plot_old_happiness.append(
+                result[scheme.name][0][i][0][TacticalVotingRisk.keys["old_happiness"]]
+            )
+        except (IndexError, KeyError):
             plot_old_happiness.append(0)
             print("Failed to get old happiness for voter ", i + 1)
         try:
-            plot_new_happiness.append(result[scheme.name][0][i][0][TacticalVotingRisk.keys["new_happiness"]])
-        except:
+            plot_new_happiness.append(
+                result[scheme.name][0][i][0][TacticalVotingRisk.keys["new_happiness"]]
+            )
+        except (IndexError, KeyError):
             plot_new_happiness.append(0)
             print("Failed to get new happiness for voter ", i + 1)
 
-    fig, ax  = plt.subplots(1, 1, figsize=(13, 6))
+    _, ax = plt.subplots(1, 1, figsize=(13, 6))
 
-    ax.bar(plot_voters, plot_new_happiness, width=0.6, color='r', align='center', label='New Happiness')
-    ax.bar(plot_voters, plot_old_happiness, width=0.6, color='g', align='center', label='Old Happiness')
+    ax.bar(
+        plot_voters,
+        plot_new_happiness,
+        width=0.6,
+        color="r",
+        align="center",
+        label="New Happiness",
+    )
+    ax.bar(
+        plot_voters,
+        plot_old_happiness,
+        width=0.6,
+        color="g",
+        align="center",
+        label="Old Happiness",
+    )
 
     my_xticks = ax.get_xticks()
     plt.xticks([my_xticks[0], my_xticks[-1]], visible=True, rotation="horizontal")
     ax.set_title(scheme.name.replace("_", " "))
     ax.set_xlabel("Voter")
     ax.set_ylabel("Happiness")
-    ax.legend(loc='upper right')
+    ax.legend(loc="upper right")
 
     plt.show()
 
 
-
-
-# def plot_hapiness_per_scheme(voters, result, scheme):
-#     fig, ax = plt.subplots(1, 2, figsize=(13, 4))
-
-#     plt.style.use('seaborn-deep')
-#     bins = np.linspace(-2, 4, 30)
-
-#     for voter in range(voters):
-#         if len(result[scheme.name][0][voter]) > 0:
-#             ax[0].hist(
-#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_happiness"]], bins,
-#                 label=['voter ' + str(voter)])
-
-#     # adding x label
-#     ax[0].set_xlabel("Happiness Value")
-#     # Set title
-#     ax[0].set_title("OLD HAPPINESS : "+scheme.name.replace("_", " "))
-#     ax[0].legend(loc='upper right')
-
-#     for voter in range(voters):
-#         if len(result[scheme.name][0][voter]) > 0:
-#             ax[1].hist(
-#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_happiness"]], bins,
-#                 label=['voter ' + str(voter)])
-
-#     # adding x label
-#     ax[1].set_xlabel("Happiness Value")
-#     # Set title
-#     ax[1].set_title("NEW HAPPINESS : "+scheme.name.replace("_", " "))
-#     ax[1].legend(loc='upper right')
-
-#     # adding y label
-#     ax[0].set_ylabel("Voter in the hapiness level")
-
-#     plt.show()
-
-# def plot_overall_hapiness_per_scheme(voters, result, scheme):
-#     fig, ax = plt.subplots(1, 2, figsize=(13, 4))
-
-#     plt.style.use('seaborn-deep')
-#     bins = np.linspace(0, 20, 30)
-
-#     for voter in range(voters):
-#         if len(result[scheme.name][0][voter]) > 0:
-#             ax[0].hist(
-#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["old_overall_happiness"]], bins,
-#                 label=['voter ' + str(voter)])
-
-#     # adding x label
-#     ax[0].set_xlabel("Happiness Value")
-#     # Set title
-#     ax[0].set_title("OLD OVERALL HAPPINESS : "+scheme.name.replace("_", " "))
-#     ax[0].legend(loc='upper right')
-
-#     for voter in range(voters):
-#         if len(result[scheme.name][0][voter]) > 0:
-#             ax[1].hist(
-#                 result[scheme.name][0][voter][0][TacticalVotingRisk.keys["new_overall_happiness"]], bins,
-#                 label=['voter ' + str(voter)])
-
-#     # adding x label
-#     ax[1].set_xlabel("Happiness Value")
-#     # Set title
-#     ax[1].set_title("NEW OVERALL HAPPINESS : "+scheme.name.replace("_", " "))
-#     ax[1].legend(loc='upper right')
-
-#     # adding y label
-#     ax[0].set_ylabel("Voter in the hapiness level")
-
-#     plt.show()
-
 if __name__ == "__main__":
     # Basic TVA
-    voters = 100
-    candidates = 4
-    t = TacticalVotingRisk(voters, candidates)
+    VOTERS = 100
+    CANDIDATES = 4
+    t = TacticalVotingRisk(VOTERS, CANDIDATES)
     result = t.compute_risk()
 
     print("--------\nOriginal voting Matrix = \n", t.situation.voting_matrix)
@@ -242,24 +217,20 @@ if __name__ == "__main__":
         total_risk = 0
         for r in risks:
             total_risk += r
-        print("Individual risk list: ", risks)     
+        print("Individual risk list: ", risks)
         print("Total risk: ", total_risk)
         print("Average risk: ", result[scheme.name][2])
 
-    if(voters > 20):
+    if VOTERS > 20:
         # if the voters are too many better plot the histogram
-        hist_plot_total_tactical_votes_available_per_voter(voters, result)
+        hist_plot_total_tactical_votes_available_per_voter(VOTERS, result)
     else:
         # if the voters are less or equal than 20, then plot the bar
-        bar_plot_total_tactical_votes_available_per_voter(voters, result)
+        bar_plot_total_tactical_votes_available_per_voter(VOTERS, result)
 
-    # if (voters > 20):
     for scheme in VotingScheme:
-        bar_plot_happiness_per_scheme_many_voters(voters, result, scheme)
-    # else:
-    if (voters <= 20):
-        for scheme in VotingScheme:
-            bar_plot_happiness_per_scheme(voters, result, scheme)
+        bar_plot_happiness_per_scheme_many_voters(VOTERS, result, scheme)
 
-    # for scheme in VotingScheme:
-    #     plot_overall_hapiness_per_scheme(voters, result, scheme)
+    if VOTERS <= 20:
+        for scheme in VotingScheme:
+            bar_plot_happiness_per_scheme(VOTERS, result, scheme)
