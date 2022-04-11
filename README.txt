@@ -1,4 +1,4 @@
-# MAS Project - Group 6
+# Multi Agent Systems Project
 
 ## Installation
 The only non-bultin package used in this project is numpy.
