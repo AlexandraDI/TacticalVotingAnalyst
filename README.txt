@@ -26,4 +26,4 @@ It can be installed as `pip install numpy` or `conda install -c conda-forge nump
 	python TacticalVotingRisk.py
 	```
 	
-[Project Report](https://github.com/AlexandraDI/Tactical_Voting_Analyst/blob/main/MAS_Tactical_Voting_Analyst_Report.pdf)
+![Project Report](https://github.com/AlexandraDI/Tactical_Voting_Analyst/blob/main/MAS_Tactical_Voting_Analyst_Report.pdf)
